@@ -20,7 +20,7 @@ class Strategy(AutoTrader):
         # stopped. Not logging though to reduce log size.
         if (self.times_called % 10) == 0:
             print(f"{datetime.now()} - CONSOLE - INFO - Still scouting")
-            self.times_called += 1
+        self.times_called += 1
 
         current_coin_price = self.manager.get_ticker_price(current_coin + self.config.BRIDGE)
 
