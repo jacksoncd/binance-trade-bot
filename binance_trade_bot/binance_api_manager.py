@@ -35,7 +35,7 @@ class BinanceAPIManager:
             self.cache,
             self.config,
             self.binance_client,
-            self.logger,
+            self.logger
         )
 
     @cached(cache=TTLCache(maxsize=1, ttl=43200))
