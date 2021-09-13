@@ -7,6 +7,7 @@ from binance_trade_bot.auto_trader import AutoTrader
 
 class Strategy(AutoTrader):
     def initialize(self):
+        self.times_called = 0
         super().initialize()
         self.initialize_current_coin()
 
@@ -17,7 +18,6 @@ class Strategy(AutoTrader):
         current_coin = self.db.get_current_coin()
         # Display on the console, the current coin+Bridge, so users can see *some* activity and not think the bot has
         # stopped. Not logging though to reduce log size.
-        self.times_called = 0
         if (self.times_called % 10) == 0:
             print(f"{datetime.now()} - CONSOLE - INFO - Still scouting")
             self.times_called += 1
