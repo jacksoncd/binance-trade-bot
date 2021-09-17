@@ -69,7 +69,6 @@ class BinanceStreamManager:
     def __init__(self, cache: BinanceCache, config: Config, binance_client: binance.client.Client, logger: Logger):
         self.cache = cache
         self.logger = logger
-        self.stream_failed = False
         self.bw_api_manager = BinanceWebSocketApiManager(
             output_default="UnicornFy", enable_stream_signal_buffer=True, exchange=f"binance.{config.BINANCE_TLD}"
         )
@@ -121,14 +120,8 @@ class BinanceStreamManager:
 
     def _stream_processor(self):
         while True:
-            if (self.bw_api_manager.stream_is_crashing(self.ticker_stream_id) or
-            self.bw_api_manager.stream_is_crashing(self.user_stream_id)):
-                self.logger.error('Websockets failed!')
-                self.stream_failed = True
-                return
-
             if self.bw_api_manager.is_manager_stopping():
-                self.info('Websockets stopping!')
+                self.logger.info('Websockets stopping!')
                 return
 
             stream_signal = self.bw_api_manager.pop_stream_signal_from_stream_signal_buffer()
@@ -143,6 +136,12 @@ class BinanceStreamManager:
                         self.logger.debug("Connect for userdata arrived", False)
                         self._fetch_pending_orders()
                         self._invalidate_balances()
+                elif signal_type == "DISCONNECT":
+                    stream_info = self.bw_api_manager.get_stream_info(stream_id)
+                    self.logger.error("Stream failed, will attempt to restart")
+                    self.logger.error(stream_info)
+                    time.sleep(3)
+                    self.bw_api_manager.set_restart_request(stream_id)
             if stream_data is not False:
                 self._process_stream_data(stream_data)
             if stream_data is False and stream_signal is False:

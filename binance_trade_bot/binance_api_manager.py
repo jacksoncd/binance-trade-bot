@@ -350,9 +350,3 @@ class BinanceAPIManager:
         trade_log.set_complete(order.cumulative_quote_qty)
 
         return order
-
-
-        def check_stream_alive():
-            if self.stream_manager.stream_failed == True:
-                return False
-            return True

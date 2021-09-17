@@ -1,7 +1,6 @@
 import random
 import sys
 from datetime import datetime
-from time import sleep
 
 from binance_trade_bot.auto_trader import AutoTrader
 
@@ -22,10 +21,6 @@ class Strategy(AutoTrader):
         if (self.times_called % 10) == 0:
             print(f"{datetime.now()} - CONSOLE - INFO - Still scouting")
         self.times_called += 1
-
-        if not self.manager.check_stream_alive():
-            sleep(5)
-            self.manager.setup_websockets()
 
         current_coin_price = self.manager.get_ticker_price(current_coin + self.config.BRIDGE)
 
