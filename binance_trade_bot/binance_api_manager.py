@@ -353,5 +353,5 @@ class BinanceAPIManager:
 
 
         def check_stream_alive():
-            if self.stream_manager.stream_failed = True:
+            if self.stream_manager.stream_failed == True:
             return False
