@@ -69,6 +69,7 @@ class BinanceStreamManager:
     def __init__(self, cache: BinanceCache, config: Config, binance_client: binance.client.Client, logger: Logger):
         self.cache = cache
         self.logger = logger
+        self.stream_failed = False
         self.bw_api_manager = BinanceWebSocketApiManager(
             output_default="UnicornFy", enable_stream_signal_buffer=True, exchange=f"binance.{config.BINANCE_TLD}"
         )
@@ -120,8 +121,10 @@ class BinanceStreamManager:
 
     def _stream_processor(self):
         while True:
-            if self.bw_api_manager.is_manager_stopping():
-                sys.exit()
+            if self.bw_api_manager.is_manager_stopping() or self.bw_api_manager.stream_is_crashing():
+                self.logger.error('Websockets failed!')
+                self.stream_failed = True
+                return
 
             stream_signal = self.bw_api_manager.pop_stream_signal_from_stream_signal_buffer()
             stream_data = self.bw_api_manager.pop_stream_data_from_stream_buffer()
