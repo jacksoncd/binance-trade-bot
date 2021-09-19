@@ -67,15 +67,16 @@ class OrderGuard:
 
 class BinanceStreamManager:
     def __init__(self, cache: BinanceCache, config: Config, binance_client: binance.client.Client, logger: Logger):
+        self.stream_error = False
         self.cache = cache
         self.logger = logger
         self.bw_api_manager = BinanceWebSocketApiManager(
             output_default="UnicornFy", enable_stream_signal_buffer=True, exchange=f"binance.{config.BINANCE_TLD}"
         )
-        self.ticker_stream_id = self.bw_api_manager.create_stream(
+        self.bw_api_manager.create_stream(
             ["arr"], ["!miniTicker"], api_key=config.BINANCE_API_KEY, api_secret=config.BINANCE_API_SECRET_KEY
         )
-        self.user_stream_id = self.bw_api_manager.create_stream(
+        self.bw_api_manager.create_stream(
             ["arr"], ["!userData"], api_key=config.BINANCE_API_KEY, api_secret=config.BINANCE_API_SECRET_KEY
         )
         self.binance_client = binance_client
@@ -137,11 +138,7 @@ class BinanceStreamManager:
                         self._fetch_pending_orders()
                         self._invalidate_balances()
                 elif signal_type == "DISCONNECT":
-                    stream_info = self.bw_api_manager.get_stream_info(stream_id)
-                    self.logger.error("Stream failed, will attempt to restart")
-                    self.logger.error(stream_info)
-                    time.sleep(3)
-                    self.bw_api_manager.set_restart_request(stream_id)
+                    self.stream_error = True
             if stream_data is not False:
                 self._process_stream_data(stream_data)
             if stream_data is False and stream_signal is False:

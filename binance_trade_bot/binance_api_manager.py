@@ -350,3 +350,9 @@ class BinanceAPIManager:
         trade_log.set_complete(order.cumulative_quote_qty)
 
         return order
+
+    def is_stream_error(self):
+        if self.stream_manager.stream_error == True:
+            self.logger.error('Stream error!')
+            return True
+        return False
