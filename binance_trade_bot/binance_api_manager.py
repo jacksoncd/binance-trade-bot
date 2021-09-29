@@ -31,12 +31,11 @@ class BinanceAPIManager:
         self.setup_websockets()
 
     def setup_websockets(self):
-        self.stream_manager = BinanceStreamManager(
-            self.cache,
-            self.config,
-            self.binance_client,
-            self.logger
-        )
+        self.logger.info('Starting Websockets')
+        self.stream_manager = BinanceStreamManager(self.cache,
+                                                self.config,
+                                                self.binance_client,
+                                                self.logger)
 
     @cached(cache=TTLCache(maxsize=1, ttl=43200))
     def get_trade_fees(self) -> Dict[str, float]:
