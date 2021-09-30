@@ -92,7 +92,7 @@ class BinanceUnicornManager(BinanceWebSocketApiManager):
 
     def stream_is_crashing(self, stream_id, error_msg=False):
         self.unicorn_stream_crash = True
-        super().stream_is_crashing(strea_id, error_msg)
+        super().stream_is_crashing(stream_id, error_msg)
 
 class BinanceStreamManager:
     def __init__(self, cache: BinanceCache, config: Config, binance_client: binance.client.Client, logger: Logger):
