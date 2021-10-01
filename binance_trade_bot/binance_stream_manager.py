@@ -64,42 +64,12 @@ class OrderGuard:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.pending_orders.remove(self.tag)
 
-class BinanceUnicornManager(BinanceWebSocketApiManager):
-    def __init__(self,
-                process_stream_data=False,
-                exchange="binance.com",
-                warn_on_update=True,
-                throw_exception_if_unrepairable=False,
-                restart_timeout=6,
-                show_secrets_in_logs=False,
-                output_default="raw_data",
-                enable_stream_signal_buffer=False,
-                disable_colorama=False,
-                stream_buffer_maxlen=None,
-                process_stream_signals=False):
-        self.unicorn_stream_crash = False
-        super().__init__(process_stream_data,
-                        exchange,
-                        warn_on_update,
-                        throw_exception_if_unrepairable,
-                        restart_timeout,
-                        show_secrets_in_logs,
-                        output_default,
-                        enable_stream_signal_buffer,
-                        disable_colorama,
-                        stream_buffer_maxlen,
-                        process_stream_signals)
-
-    def stream_is_crashing(self, stream_id, error_msg=False):
-        self.unicorn_stream_crash = True
-        super().stream_is_crashing(stream_id, error_msg)
-
 class BinanceStreamManager:
     def __init__(self, cache: BinanceCache, config: Config, binance_client: binance.client.Client, logger: Logger):
         self.stream_error = False
         self.cache = cache
         self.logger = logger
-        self.bw_api_manager = BinanceUnicornManager(
+        self.bw_api_manager = BinanceWebSocketApiManager(
             output_default="UnicornFy", enable_stream_signal_buffer=True, exchange=f"binance.{config.BINANCE_TLD}"
         )
         self.bw_api_manager.create_stream(
@@ -166,6 +136,8 @@ class BinanceStreamManager:
                         self.logger.debug("Connect for userdata arrived", False)
                         self._fetch_pending_orders()
                         self._invalidate_balances()
+                elif signal_type == "DISCONNECT":
+                    self.stream_error = True
             if stream_data is not False:
                 self._process_stream_data(stream_data)
             if stream_data is False and stream_signal is False:

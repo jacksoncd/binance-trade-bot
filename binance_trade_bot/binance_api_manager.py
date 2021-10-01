@@ -351,7 +351,7 @@ class BinanceAPIManager:
         return order
 
     def is_stream_error(self):
-        if self.stream_manager.bw_api_manager.unicorn_stream_crash:
+        if self.stream_manager.stream_error == True:
             self.logger.error('Stream error!')
             return True
         return False
