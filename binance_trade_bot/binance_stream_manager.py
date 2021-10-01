@@ -137,7 +137,8 @@ class BinanceStreamManager:
                         self._fetch_pending_orders()
                         self._invalidate_balances()
                 elif signal_type == "DISCONNECT":
-                    self.stream_error = True
+                    self.logger.error('Stream disconnecting, sending restart request')
+                    self.bw_api_manager.set_restart_request(stream_id)
             if stream_data is not False:
                 self._process_stream_data(stream_data)
             if stream_data is False and stream_signal is False:

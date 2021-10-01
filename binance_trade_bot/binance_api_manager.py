@@ -31,7 +31,7 @@ class BinanceAPIManager:
         self.setup_websockets()
 
     def setup_websockets(self):
-        self.logger.info('Starting Websockets')
+        self.logger.info('Starting websockets')
         self.stream_manager = BinanceStreamManager(self.cache,
                                                 self.config,
                                                 self.binance_client,
