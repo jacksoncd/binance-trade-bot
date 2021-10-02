@@ -96,7 +96,6 @@ class BinanceUnicornManager(BinanceWebSocketApiManager):
 
 class BinanceStreamManager:
     def __init__(self, cache: BinanceCache, config: Config, binance_client: binance.client.Client, logger: Logger):
-        self.stream_error = False
         self.cache = cache
         self.logger = logger
         self.bw_api_manager = BinanceUnicornManager(

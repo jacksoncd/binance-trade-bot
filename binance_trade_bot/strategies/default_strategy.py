@@ -23,10 +23,6 @@ class Strategy(AutoTrader):
         #    print(f"{datetime.now()} - CONSOLE - INFO - Still scouting")
         #self.times_called += 1
 
-        if self.manager.is_stream_error():
-            sleep(3)
-            self.manager.setup_websockets()
-
         current_coin_price = self.manager.get_ticker_price(current_coin + self.config.BRIDGE)
 
         if current_coin_price is None:
