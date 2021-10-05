@@ -39,7 +39,6 @@ def main():
     trader.initialize()
 
     schedule = SafeScheduler(logger)
-    schedule.every(1).seconds.do(manager.is_stream_error).tag("checking error")
     schedule.every(config.SCOUT_SLEEP_TIME).seconds.do(trader.scout).tag("scouting")
     schedule.every(1).minutes.do(trader.update_values).tag("updating value history")
     schedule.every(1).minutes.do(db.prune_scout_history).tag("pruning scout history")

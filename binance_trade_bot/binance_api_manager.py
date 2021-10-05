@@ -349,9 +349,3 @@ class BinanceAPIManager:
         trade_log.set_complete(order.cumulative_quote_qty)
 
         return order
-
-    def is_stream_error(self):
-        if self.stream_manager.bw_api_manager.unicorn_stream_crash:
-            self.logger.error('Stream error!')
-            time.sleep(10)
-            self.setup_websockets()
