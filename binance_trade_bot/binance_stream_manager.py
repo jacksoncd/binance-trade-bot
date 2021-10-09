@@ -138,6 +138,11 @@ class BinanceStreamManager:
                                                                                 mode="LIFO")
             user_data = self.bw_api_manager.pop_stream_data_from_stream_buffer(stream_buffer_name=self.user_stream)
 
+            if ticker_data is False and stream_signal is False \
+		and user_data is False:
+		time.sleep(0.01)
+		continue
+
             if stream_signal is not False:
                 signal_type = stream_signal["type"]
                 stream_id = stream_signal["stream_id"]
@@ -147,11 +152,13 @@ class BinanceStreamManager:
                         self.logger.debug("Connect for userdata arrived", False)
                         self._fetch_pending_orders()
                         self._invalidate_balances()
+
             if user_data is not False:
                 self._process_user_data(user_data)
+
             if ticker_data is not False:
                 self._process_ticker_data(ticker_data)
-            time.sleep(0.1)
+
 
     def _process_ticker_data(self, stream_data):
         event_type = stream_data["event_type"]
