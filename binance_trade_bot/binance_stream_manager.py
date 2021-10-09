@@ -139,8 +139,8 @@ class BinanceStreamManager:
             user_data = self.bw_api_manager.pop_stream_data_from_stream_buffer(stream_buffer_name=self.user_stream)
 
             if ticker_data is False and stream_signal is False and user_data is False:
-		time.sleep(0.01)
-		continue
+                time.sleep(0.01)
+                continue
 
             if stream_signal is not False:
                 signal_type = stream_signal["type"]
