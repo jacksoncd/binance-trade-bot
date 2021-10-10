@@ -1,6 +1,4 @@
 services:
   app:
-    image: jump_trader
     build: .
-    container_name: jumping_trader
     restart: always
